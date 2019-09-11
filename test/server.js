@@ -1,6 +1,9 @@
 const test = require('tape')
+const testAsync = require('tape-async')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
+const { buildMessage } = require('../lib/server')
+const { NO_PULL_REQUESTS } = require('../lib/messages')
 
 const SlackbotsMock = function SlackbotsMock () {}
 SlackbotsMock.prototype.on = sinon.stub()
@@ -12,6 +15,22 @@ const envMock = {
   SLACK_CHANNELS: 'foo',
   GH_REPOS: 'foo',
   CHECK_INTERVAL: '1'
+}
+
+const exampleLabelsProp = [
+  {
+    id: 123456789,
+    node_id: 'ABECxc_QSDFE/',
+    url: 'https://api.github.com/repos/example/myrepo/labels/on%20hold',
+    name: 'on hold',
+    color: 'ccef7a',
+    default: false
+  }
+]
+const examplePr = {
+  title: 'My PR',
+  html_url: 'https://github.com/octocat/Hello-World/pull/1347',
+  labels: exampleLabelsProp
 }
 
 const pullhubMock = sinon.stub().resolves([])
@@ -36,4 +55,17 @@ test('it calls slackbots onStart handler', (t) => {
   server()
   clock.tick(envMock.CHECK_INTERVAL)
   t.ok(SlackbotsMock.prototype.on.calledWith('start'))
+})
+
+testAsync('it matches labels (1/1)', async (t) => {
+  t.plan(1)
+  const message = await buildMessage(new Set(['on hold']), [examplePr])
+  t.equals(message, NO_PULL_REQUESTS)
+})
+
+testAsync('it matches labels (1/3)', async (t) => {
+  t.plan(1)
+  const nonExcluded = { ...examplePr, labels: [] }
+  const message = await buildMessage(new Set(['on hold']), [nonExcluded, examplePr, nonExcluded])
+  t.equals(message.split('\n\n\n')[1].split('\n').length, 2)
 })

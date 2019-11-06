@@ -10,6 +10,16 @@ This project is part of the Talkdesk Hackathon April 2017.
 
 ## Running the bot
 
+### Easy debugging
+To quickly verify it works using the configured environment variables, use `--now` to immediately fetch pull requests:
+
+```bash
+GH_EXCLUDE_LABELS='wip' \
+GH_TOKEN=mytoken \
+GH_REPOS=example/myrepo,example/myotherrepo \
+npm start -- --now
+```
+
 ### The quick and easy way
 
 The easiest way to get an instance of Pr. Police up and running is to deploy it to Heroku by clicking on the button below.

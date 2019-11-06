@@ -23,6 +23,7 @@
   "author": "rogeriopvl",
   "license": "MIT",
   "dependencies": {
+    "github-api": "^3.3.0",
     "minimist": "^1.2.0",
     "moment": "^2.18.1",
     "pullhub": "^1.1.0",

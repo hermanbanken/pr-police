@@ -1,7 +1,7 @@
 const test = require('tape')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const { buildMessage } = require('../lib/server')
+const { buildMessage } = require('../lib/run')
 const { NO_PULL_REQUESTS } = require('../lib/messages')
 
 const SlackbotsMock = function SlackbotsMock () {}

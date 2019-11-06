@@ -1,5 +1,4 @@
 const test = require('tape')
-const testAsync = require('tape-async')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
 const { buildMessage } = require('../lib/server')
@@ -57,15 +56,15 @@ test('it calls slackbots onStart handler', (t) => {
   t.ok(SlackbotsMock.prototype.on.calledWith('start'))
 })
 
-testAsync('it matches labels (1/1)', async (t) => {
+test('it matches labels (1/1)', (t) => {
   t.plan(1)
-  const message = await buildMessage(new Set(['on hold']), [examplePr])
+  const message = buildMessage(new Set(['on hold']), [examplePr])
   t.equals(message, NO_PULL_REQUESTS)
 })
 
-testAsync('it matches labels (1/3)', async (t) => {
+test('it matches labels (1/3)', (t) => {
   t.plan(1)
   const nonExcluded = { ...examplePr, labels: [] }
-  const message = await buildMessage(new Set(['on hold']), [nonExcluded, examplePr, nonExcluded])
+  const message = buildMessage(new Set(['on hold']), [nonExcluded, examplePr, nonExcluded])
   t.equals(message.split('\n\n\n')[1].split('\n').length, 2)
 })
